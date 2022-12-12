@@ -1,5 +1,5 @@
 pub mod term {
-    use super::operation::Operation;
+  use super::operation::Operation;
 
   pub fn new_number(value: f32) -> TermNode{
     TermNode::Number{value: value}
@@ -16,9 +16,19 @@ pub mod term {
     }
     pub fn get_value_result(&self) -> Result<f32, &str>{
       if let TermNode::Number{value} = self{
-        return Ok(*value);
+        return Ok(*value)
       }
-      return Err("This term node is not a number, but yes a operation.");
+      return Err("This term node is not a number, but yes a operation.")
+    }
+
+    pub fn operate(&self) -> TermNode{
+      self.operate_result().unwrap()
+    }
+    pub fn operate_result(&self) -> Result<TermNode, &str>{
+      if let TermNode::Operation { operation } = self{
+        return Ok(operation.operate())
+      }
+      return Err("This term node is not a operation, but yes a number")
     }
   }
 }
@@ -73,7 +83,7 @@ mod test_term{
   use test_case::test_case;
 
   use super::term;
-  use super::operation::Operation;
+  use super::operation;
 
   #[test_case(3.4; "Get the number 3.4 from a number term node.")]
   #[test_case(22.3; "Get the number 22.3 from a number term node.")]
@@ -81,5 +91,33 @@ mod test_term{
   fn number_term_get(v: f32){
     let number_value = term::new_number(v).get_value();
     assert_eq!(number_value, v);
+  }
+
+  #[test_case(3.2, 2.3; "Sum 3.2 and 2.3.")]
+  #[test_case(0.0, 2.3; "Sum 0 and 2.3.")]
+  #[test_case(3.2, -1.0; "Sum 3.2 and -1.0.")]
+  fn operate_addition(v1: f32, v2: f32){
+    let addend_1 = term::new_number(v1);
+    let addend_2 = term::new_number(v2);
+
+    let value = operation::new_addition(addend_1, addend_2)
+    .operate()
+    .get_value();
+
+    assert_eq!(value, v1 + v2);
+  }
+
+  #[test_case(1.9, 3.1; "Subtract 1.9 to 3.1.")]
+  #[test_case(0.0, 3.1; "Subtract 0 to 3.1.")]
+  #[test_case(100.0, 90.1; "Subtract 100.0 to 90.1.")]
+  fn operate_subtract(v1: f32, v2: f32){
+    let minuend = term::new_number(v1);
+    let subtrahend = term::new_number(v2);
+
+    let value = operation::new_subtract(minuend, subtrahend)
+    .operate()
+    .get_value();
+
+    assert_eq!(value, v1 - v2);
   }
 }
