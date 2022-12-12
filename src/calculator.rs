@@ -32,6 +32,7 @@ pub mod term {
     }
   }
 }
+
 pub mod operation {
   use super::term;
   use term::TermNode;
@@ -78,6 +79,7 @@ pub mod operation {
     }
   }
 }
+
 #[cfg(test)]
 mod test_term{
   use test_case::test_case;
