@@ -1,7 +1,7 @@
 # CLI Calculator in Rust lang
 This project is a very simple calculator in CLI made in Rust, that uses trees for operate its expressions.
 
-For while, the code is separated in two important modules: [term](#term) and [calculator](#operation).
+For while, the code is separated in two important modules: [term](#term) and [operation](#operation).
 
 ## Term
 Here is the TermNode enum, which is a node that composes our operation tree.
