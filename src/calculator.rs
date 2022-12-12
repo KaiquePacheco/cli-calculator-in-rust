@@ -1,23 +1,53 @@
 pub mod term {
+    use super::operation::Operation;
+
   pub fn new_number(value: f32) -> TermNode{
-    TermNode::number{value: value}
+    TermNode::Number{value: value}
   }
+
   pub enum TermNode {
-    number{value: f32}
+    Number{value: f32},
+    Operation{operation: Operation}
   }
 
   impl TermNode {
     pub fn get_value(&self) -> f32{
-      match self.get_value_result() {
-        Ok(value) => return value,
-        Err(log) => panic!("{log}")
-      }
+      self.get_value_result().unwrap()
     }
     pub fn get_value_result(&self) -> Result<f32, &str>{
-      if let TermNode::number{value} = self{
+      if let TermNode::Number{value} = self{
         return Ok(*value);
       }
       return Err("This term node is not a number, but yes a operation.");
+    }
+  }
+}
+pub mod operation {
+  use super::term;
+  use term::TermNode;
+
+  static OPERATION_SYMBOLS: [&str; 2] = ["+", "-"];
+
+  pub enum Operation{
+    Addition{addend_1: Box<TermNode>, addend_2: Box<TermNode>},
+    Subtract{minuend: Box<TermNode>, subtrahend: Box<TermNode>}
+  }
+  impl Operation{
+    pub fn operate(&self) -> TermNode{
+      match self {
+        Operation::Addition { addend_1, addend_2 } => {
+          let addend_1 = addend_1.get_value();
+          let addend_2 = addend_2.get_value();
+
+          return term::new_number(addend_1 + addend_2)
+        } 
+        Operation::Subtract { minuend, subtrahend } => {
+          let minuend = minuend.get_value();
+          let subtrahend = subtrahend.get_value();
+
+          return term::new_number(minuend - subtrahend)
+        }
+      }
     }
   }
 }
