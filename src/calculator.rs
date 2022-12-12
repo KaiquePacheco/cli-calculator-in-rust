@@ -28,6 +28,23 @@ pub mod operation {
 
   static OPERATION_SYMBOLS: [&str; 2] = ["+", "-"];
 
+  pub fn new_addition(addend_1: TermNode, addend_2: TermNode) -> TermNode{
+    TermNode::Operation { 
+      operation: Operation::Addition { 
+        addend_1: Box::new(addend_1),
+        addend_2: Box::new(addend_2) 
+      }
+    }
+  }
+  pub fn new_subtract(minuend: TermNode, subtrahend: TermNode) -> TermNode{
+    TermNode::Operation { 
+      operation: Operation::Subtract { 
+        minuend: Box::new(minuend),
+        subtrahend: Box::new(subtrahend)
+      }
+    }
+  }
+
   pub enum Operation{
     Addition{addend_1: Box<TermNode>, addend_2: Box<TermNode>},
     Subtract{minuend: Box<TermNode>, subtrahend: Box<TermNode>}
@@ -54,7 +71,9 @@ pub mod operation {
 #[cfg(test)]
 mod test_term{
   use test_case::test_case;
+
   use super::term;
+  use super::operation::Operation;
 
   #[test_case(3.4; "Get the number 3.4 from a number term node.")]
   #[test_case(22.3; "Get the number 22.3 from a number term node.")]
@@ -63,5 +82,4 @@ mod test_term{
     let number_value = term::new_number(v).get_value();
     assert_eq!(number_value, v);
   }
-
 }
